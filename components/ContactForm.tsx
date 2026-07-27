@@ -25,7 +25,7 @@ export default function ContactForm() {
     if (!data.email.trim()) {
       errs.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      errs.email = "Invalid email address";
+      errs.email = "Please enter a valid email";
     }
     if (!data.message.trim()) errs.message = "Message is required";
     return errs;
@@ -75,7 +75,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-5" data-testid="contact-form">
       <div>
         <label
           htmlFor="name"
