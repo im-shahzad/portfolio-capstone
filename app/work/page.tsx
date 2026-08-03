@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function WorkPage() {
   return (
-    <main>
+    <main className="max-w-prose">
       <h1>Case Study: Meme Caption Generator</h1>
 
       <section>

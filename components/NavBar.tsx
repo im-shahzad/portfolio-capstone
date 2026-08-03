@@ -15,7 +15,7 @@ export default function NavBar() {
 
   return (
     <nav className="flex items-center gap-6 mx-auto w-full max-w-screen-xl px-6 py-5 bg-bg text-text font-body">
-      <ul className="flex gap-6 list-none m-0 p-0">
+      <ul className="flex flex-wrap gap-6 list-none m-0 p-0">
         {links.map((link) => (
           <li key={link.href}>
             <Link

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <main>
+    <main className="max-w-prose">
       <h1>About</h1>
       <p>
         I&apos;m someone who enjoys building software and exploring how AI can
