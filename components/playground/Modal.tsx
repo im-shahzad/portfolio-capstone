@@ -8,6 +8,19 @@ export default function Modal() {
   const modalRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
+  // Helper to retrieve all standard interactive/focusable elements in the modal
+  const getFocusableElements = (): HTMLElement[] => {
+    if (!modalRef.current) return [];
+    const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    return Array.from(modalRef.current.querySelectorAll<HTMLElement>(selector));
+  };
+
+  const closeModal = () => {
+    setIsOpen(false);
+    // Return focus back to the trigger button that opened the modal
+    triggerRef.current?.focus();
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -39,19 +52,6 @@ export default function Modal() {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
   }, [isOpen]);
-
-  const closeModal = () => {
-    setIsOpen(false);
-    // 4. Return focus back to the trigger button that opened the modal
-    triggerRef.current?.focus();
-  };
-
-  // Helper to retrieve all standard interactive/focusable elements in the modal
-  const getFocusableElements = (): HTMLElement[] => {
-    if (!modalRef.current) return [];
-    const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
-    return Array.from(modalRef.current.querySelectorAll<HTMLElement>(selector));
-  };
 
   // 5. Focus Trap implementation
   const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
