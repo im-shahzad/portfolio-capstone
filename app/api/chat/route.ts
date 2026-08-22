@@ -1,5 +1,6 @@
-import { streamText, convertToModelMessages } from 'ai';
+import { streamText, convertToModelMessages, tool, zodSchema } from 'ai';
 import { google } from '@ai-sdk/google';
+import { z } from 'zod';
 import {
   CHAT_MODEL,
   MAX_MESSAGES_PER_CONVERSATION,
@@ -141,6 +142,57 @@ export async function POST(req: Request) {
       model: google(CHAT_MODEL),
       system: SYSTEM_PROMPT,
       messages: modelMessages,
+      tools: {
+        getProjectInfo: tool({
+          description:
+            'Retrieve detailed information about a portfolio project. Call this when the visitor asks about projects, work, or things the candidate has built. Do not describe projects from memory — always use this tool.',
+          inputSchema: zodSchema(
+            z.object({
+              projectName: z
+                .string()
+                .optional()
+                .describe('Optional project name to look up. Omit for the featured project.'),
+            })
+          ),
+          execute: async (input: { projectName?: string }) => {
+            const { projectName } = input;
+            const projects: Record<
+              string,
+              {
+                name: string;
+                techStack: string[];
+                problem: string;
+                whatIDid: string;
+                outcome: string;
+                repoLink: string;
+              }
+            > = {
+              'Meme Caption Generator': {
+                name: 'Meme Caption Generator',
+                techStack: ['Python', 'Gemini API', 'Streamlit'],
+                problem:
+                  'Most AI text generators can generate content, but getting a caption that\'s actually usable often means rewriting prompts over and over.',
+                whatIDid:
+                  'Predefined tone options (Funny, Sarcastic, Wholesome), generation history, side-by-side comparison.',
+                outcome:
+                  'Reduced iteration friction significantly through repeated use; not yet formally user-tested.',
+                repoLink: 'https://github.com/IMShahzad000/meme-caption-generator',
+              },
+            };
+
+            const key = projectName ?? 'Meme Caption Generator';
+            const project = projects[key];
+
+            if (!project) {
+              return {
+                error: `Project "${key}" not found. Available projects: ${Object.keys(projects).join(', ')}`,
+              };
+            }
+
+            return project;
+          },
+        }),
+      },
       onError: (error) => {
         logStreamError('streamText onError', error);
       },

@@ -13,6 +13,12 @@ import {
 } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import {
+  ProjectCardLoading,
+  ProjectCardFetching,
+  ProjectCardResult,
+  ProjectCardError,
+} from "./ProjectCard";
+import {
   MAX_MESSAGES_PER_CONVERSATION,
   SUGGESTED_QUESTIONS,
 } from "@/lib/chatConfig";
@@ -252,13 +258,75 @@ export default function Chat() {
             return null;
           }
 
+          const toolParts = Array.isArray(msg.parts)
+            ? msg.parts.filter(
+                (p) =>
+                  (typeof p.type === "string" && p.type.startsWith("tool-")) ||
+                  p.type === "dynamic-tool"
+              )
+            : [];
+
           return (
-            <ChatMessage
-              key={msg.id || index}
-              role={msg.role as "user" | "assistant" | "system"}
-              content={content}
-              isStreaming={isStreamingMessage}
-            />
+            <React.Fragment key={msg.id || index}>
+              {content && (
+                <ChatMessage
+                  role={msg.role as "user" | "assistant" | "system"}
+                  content={content}
+                  isStreaming={isStreamingMessage}
+                />
+              )}
+              {toolParts.map((part, i) => {
+                const toolName =
+                  part.type === "dynamic-tool"
+                    ? (part as { toolName?: string }).toolName
+                    : typeof part.type === "string" && part.type.startsWith("tool-")
+                      ? part.type.slice(5)
+                      : undefined;
+
+                if (toolName !== "getProjectInfo") return null;
+
+                const state = (part as Record<string, unknown>).state as
+                  | string
+                  | undefined;
+                const output = (part as Record<string, unknown>).output as
+                  | Record<string, unknown>
+                  | undefined;
+                const errorText = (part as Record<string, unknown>).errorText as
+                  | string
+                  | undefined;
+
+                if (state === "input-streaming") {
+                  return <ProjectCardLoading key={`tool-${i}`} />;
+                }
+
+                if (state === "input-available") {
+                  return <ProjectCardFetching key={`tool-${i}`} />;
+                }
+
+                if (state === "output-available" && output) {
+                  if (output.error) return <ProjectCardError key={`tool-${i}`} />;
+                  return (
+                    <ProjectCardResult
+                      key={`tool-${i}`}
+                      data={{
+                        name: output.name as string,
+                        techStack: output.techStack as string[],
+                        problem: output.problem as string,
+                        whatIDid: output.whatIDid as string,
+                        outcome: output.outcome as string,
+                        repoLink: output.repoLink as string,
+                      }}
+                    />
+                  );
+                }
+
+                if (state === "output-error" || errorText) {
+                  return <ProjectCardError key={`tool-${i}`} />;
+                }
+
+                return <ProjectCardLoading key={`tool-${i}`} />;
+              })}
+            </React.Fragment>
           );
         })}
 
