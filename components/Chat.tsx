@@ -45,6 +45,7 @@ function getMessageContent(msg: {
 export default function Chat() {
   const [inputText, setInputText] = useState("");
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [timedOut, setTimedOut] = useState(false);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -58,6 +59,7 @@ export default function Chat() {
     setMessages,
     error,
     clearError,
+    regenerate,
   } = useChat();
 
   const isGenerating = status === "submitted" || status === "streaming";
@@ -98,6 +100,22 @@ export default function Chat() {
   }, [messages, status, isAtBottom, isGenerating, isThinking]);
 
   /**
+   * Timeout guard: if status stays "submitted" for 20s without any data arriving,
+   * abort the request and surface the error banner so the user can retry.
+   */
+  const TIMEOUT_MS = 30_000;
+
+  useEffect(() => {
+    if (status === "submitted") {
+      const timer = setTimeout(() => {
+        stop();
+        setTimedOut(true);
+      }, TIMEOUT_MS);
+      return () => clearTimeout(timer);
+    }
+  }, [status, stop]);
+
+  /**
    * Scroll down manually when clicking the floating pill.
    */
   const scrollToBottom = () => {
@@ -131,6 +149,7 @@ export default function Chat() {
     if (!text || isGenerating || isCapReached) return;
 
     setInputText("");
+    setTimedOut(false);
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
@@ -154,7 +173,24 @@ export default function Chat() {
     stop();
     setMessages([]);
     clearError?.();
+    setTimedOut(false);
     setInputText("");
+  };
+
+  const isRetryingRef = useRef(false);
+
+  const handleRetry = async () => {
+    if (isRetryingRef.current || isGenerating) return;
+    isRetryingRef.current = true;
+    try {
+      setTimedOut(false);
+      clearError?.();
+      await regenerate();
+    } catch (err) {
+      console.error("Retry failed:", err);
+    } finally {
+      isRetryingRef.current = false;
+    }
   };
 
   return (
@@ -210,7 +246,7 @@ export default function Chat() {
         ref={scrollContainerRef}
         onScroll={handleScroll}
         data-testid="chat-messages-container"
-        className="relative flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-2 scroll-smooth"
+        className="relative flex-1 overflow-y-auto overscroll-y-contain px-3 sm:px-6 py-4 space-y-2 scroll-smooth"
       >
         {/* Empty State / Welcome Suggestions */}
         {messages.length === 0 && (
@@ -371,7 +407,7 @@ export default function Chat() {
       )}
 
       {/* Error Alert Bar */}
-      {error && (
+      {(error || timedOut) && (
         <div
           data-testid="chat-error-banner"
           className="mx-3 sm:mx-6 mb-2 p-3 rounded-xl bg-rose-950/40 border border-rose-800/60 text-xs sm:text-sm text-rose-200 flex items-start gap-2.5"
@@ -379,13 +415,17 @@ export default function Chat() {
           <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1 leading-snug">
             <span className="font-semibold">Error:</span>{" "}
-            {error.message || "Failed to generate AI response. Please try again."}
+            {timedOut && !error
+              ? "Response timed out. The server took too long to respond."
+              : error?.message || "Failed to generate AI response. Please try again."}
           </div>
           <button
-            onClick={() => clearError?.()}
-            className="text-xs text-rose-400 hover:text-rose-200 underline font-medium ml-2"
+            onClick={handleRetry}
+            disabled={isGenerating}
+            data-testid="retry-button"
+            className="flex items-center gap-1.5 text-xs text-rose-400 hover:text-rose-200 font-medium ml-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            Dismiss
+            Retry
           </button>
         </div>
       )}
@@ -442,7 +482,7 @@ export default function Chat() {
                 : "Ask about my projects, GenAI engineering, or background... (Enter to send)"
             }
             rows={1}
-            className="flex-1 bg-transparent border-0 resize-none px-2.5 py-1.5 text-xs sm:text-sm text-[#F2EDE4] placeholder-[#8A8175] focus:outline-hidden disabled:opacity-50 min-h-[38px] max-h-[140px] overflow-y-auto leading-relaxed"
+            className="flex-1 bg-transparent border-0 resize-none px-2.5 py-1.5 text-[16px] sm:text-sm text-[#F2EDE4] placeholder-[#8A8175] focus:outline-hidden disabled:opacity-50 min-h-[38px] max-h-[140px] overflow-y-auto leading-relaxed"
           />
 
           {/* Action Buttons: Stop button during generation, Send button otherwise */}

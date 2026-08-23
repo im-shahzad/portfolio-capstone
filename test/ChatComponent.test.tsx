@@ -10,6 +10,7 @@ const mockSendMessage = vi.fn();
 const mockStop = vi.fn();
 const mockSetMessages = vi.fn();
 const mockClearError = vi.fn();
+const mockRegenerate = vi.fn();
 
 let mockUseChatState = {
   messages: [] as Array<{ id: string; role: string; content?: string; parts?: Array<{ type: string; text: string }> }>,
@@ -26,6 +27,7 @@ vi.mock("@ai-sdk/react", () => ({
     stop: mockStop,
     setMessages: mockSetMessages,
     clearError: mockClearError,
+    regenerate: mockRegenerate,
   }),
 }));
 
@@ -158,5 +160,38 @@ describe("Chat component", () => {
     expect(screen.getByTestId("cap-reached-banner")).toBeInTheDocument();
     expect(screen.getByTestId("message-counter")).toHaveTextContent("20/20 msgs");
     expect(screen.getByTestId("chat-input")).toBeDisabled();
+  });
+
+  it("shows retry button in error banner and calls regenerate on click", async () => {
+    mockUseChatState = {
+      messages: [
+        { id: "1", role: "user", content: "Tell me about your background." },
+      ],
+      status: "ready",
+      error: new Error("Rate limit exceeded"),
+    };
+
+    render(<Chat />);
+    const retryBtn = screen.getByTestId("retry-button");
+    expect(retryBtn).toBeInTheDocument();
+    expect(retryBtn).toHaveTextContent("Retry");
+
+    fireEvent.click(retryBtn);
+    expect(mockClearError).toHaveBeenCalled();
+    expect(mockRegenerate).toHaveBeenCalledTimes(1);
+  });
+
+  it("disables retry button while generating", () => {
+    mockUseChatState = {
+      messages: [
+        { id: "1", role: "user", content: "Hello" },
+      ],
+      status: "streaming",
+      error: new Error("Something failed"),
+    };
+
+    render(<Chat />);
+    const retryBtn = screen.getByTestId("retry-button");
+    expect(retryBtn).toBeDisabled();
   });
 });
