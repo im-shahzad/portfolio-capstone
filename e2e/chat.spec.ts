@@ -48,7 +48,7 @@ test.describe("Chat page e2e", () => {
     await sendBtn.click();
 
     // Verify the user message appears
-    await expect(page.getByText("You")).toBeVisible();
+    await expect(page.getByText("You", { exact: true })).toBeVisible();
     await expect(page.getByText("What projects have you built?")).toBeVisible();
 
     // Verify the assistant response appears
