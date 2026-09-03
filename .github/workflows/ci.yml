@@ -22,6 +22,8 @@ jobs:
   unit-tests:
     name: Unit & Component Tests
     runs-on: ubuntu-latest
+    env:
+      GOOGLE_GENERATIVE_AI_API_KEY: "test-only-not-a-real-key"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

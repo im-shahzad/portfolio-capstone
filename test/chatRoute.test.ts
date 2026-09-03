@@ -7,6 +7,8 @@ vi.mock("ai", () => ({
     toUIMessageStreamResponse: vi.fn().mockReturnValue(new Response("mock stream", { status: 200 })),
   }),
   convertToModelMessages: vi.fn(async (messages) => messages),
+  tool: vi.fn((config) => config),
+  zodSchema: vi.fn((schema) => schema),
 }));
 
 vi.mock("@ai-sdk/google", () => ({
@@ -19,6 +21,7 @@ describe("API Route: app/api/chat/route.ts", () => {
   beforeEach(() => {
     process.env.GOOGLE_GENERATIVE_AI_API_KEY = "mock-api-key-12345";
     vi.clearAllMocks();
+    vi.resetModules();
   });
 
   afterEach(() => {

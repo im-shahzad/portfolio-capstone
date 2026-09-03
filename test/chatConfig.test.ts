@@ -23,21 +23,19 @@ describe("chatConfig", () => {
     // Background
     expect(SYSTEM_PROMPT).toContain("I build AI-powered applications people can actually use, not just API demonstrations");
     expect(SYSTEM_PROMPT).toContain("combining Python with Generative AI");
-    
-    // Meme Caption Generator project
+
+    // getProjectInfo tool — project details live here, not inline in the prompt
+    expect(SYSTEM_PROMPT).toContain("getProjectInfo");
+    expect(SYSTEM_PROMPT).toContain("ALWAYS call this tool");
+    expect(SYSTEM_PROMPT).toContain("Never describe projects from memory");
     expect(SYSTEM_PROMPT).toContain("Meme Caption Generator");
-    expect(SYSTEM_PROMPT).toContain("predefined tone options (Funny, Sarcastic, Wholesome)");
-    expect(SYSTEM_PROMPT).toContain("generation history and side-by-side comparison");
-    
+
     // Honesty caveat
     expect(SYSTEM_PROMPT).toContain("not formally user-tested yet");
-    
-    // UX lesson
-    expect(SYSTEM_PROMPT).toContain("the UX layer is what turns a model into a product people actually want to use");
-    
+
     // Contact
     expect(SYSTEM_PROMPT).toContain("imshahzad000@gmail.com");
-    
+
     // First person & tone constraints
     expect(SYSTEM_PROMPT).toContain('first person ("I", "me", "my")');
   });
