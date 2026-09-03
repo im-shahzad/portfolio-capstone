@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import {
-  Send,
   Square,
   Sparkles,
   RotateCcw,
@@ -12,6 +11,7 @@ import {
   Info,
 } from "lucide-react";
 import ChatMessage from "./ChatMessage";
+import SendButton from "./SendButton";
 import {
   ProjectCardLoading,
   ProjectCardFetching,
@@ -500,16 +500,12 @@ export default function Chat() {
                 <span className="hidden xs:inline">Stop</span>
               </button>
             ) : (
-              <button
-                type="submit"
+              <SendButton
                 disabled={!inputText.trim() || isCapReached}
-                data-testid="send-button"
-                title="Send message"
-                aria-label="Send message"
-                className="flex items-center justify-center w-10 h-10 rounded-lg bg-[#D9A441] text-[#1C1917] hover:bg-[#E5B255] disabled:opacity-30 disabled:hover:bg-[#D9A441] disabled:cursor-not-allowed transition-all font-bold min-h-[40px] min-w-[40px] shadow-sm active:scale-95"
-              >
-                <Send className="w-4 h-4" />
-              </button>
+                onSend={async () => {
+                  await handleSubmitMessage();
+                }}
+              />
             )}
           </div>
         </form>

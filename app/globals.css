@@ -151,6 +151,34 @@ h1, h2, h3, h4, h5, h6 {
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* ─── Send-button animation keyframes ─── */
+
+/* Error shake — a single quick rattle via translateX (compositor-only) */
+@keyframes send-btn-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-2px); }
+  80%      { transform: translateX(2px); }
+}
+
+/* Loading spinner rotation */
+@keyframes send-btn-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Skip ALL motion for users who prefer reduced motion.
+   Color and label changes (non-motion feedback) still fire. */
+@media (prefers-reduced-motion: reduce) {
+  .send-btn-shake {
+    animation: none !important;
+  }
+  .send-btn-spinner {
+    animation: none !important;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
