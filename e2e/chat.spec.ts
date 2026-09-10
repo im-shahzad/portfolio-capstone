@@ -6,28 +6,25 @@ test.describe("Chat page e2e", () => {
   }) => {
     // Mock the AI API route — never call the real Gemini API
     await page.route("**/api/chat", async (route) => {
-      // Simulate a streaming AI response using the Vercel AI SDK data-stream format
-      const encoder = new TextEncoder();
-      const stream = new ReadableStream({
-        start(controller) {
-          // Send a text part
-          controller.enqueue(
-            encoder.encode('0:"I am the portfolio AI assistant. ')
-          );
-          controller.enqueue(encoder.encode('0:"I can tell you about my projects and background."'));
-          controller.enqueue(encoder.encode("e: {}\n"));
-          controller.enqueue(encoder.encode("d: {\"finishReason\":\"stop\",\"usage\":{\"promptTokens\":0,\"completionTokens\":0}}\n"));
-          controller.close();
-        },
-      });
+      // AI SDK v7 uses the "UI Message Stream" protocol (SSE with JSON chunks),
+      // NOT the old v3 data-stream format (0:"text", e:{}, d:{} prefixed lines).
+      // Each chunk is an SSE "data:" line containing a JSON object with a "type" field.
+      const body = [
+        `data: {"type":"text","text":"I am the portfolio AI assistant. I can tell you about my projects and background."}`,
+        `data: {"type":"finish","finishReason":"stop","usage":{"promptTokens":0,"completionTokens":0}}`,
+        `data: [DONE]`,
+      ].join("\n\n") + "\n\n";
 
       await route.fulfill({
         status: 200,
         headers: {
-          "Content-Type": "text/plain; charset=utf-8",
-          "X-Vercel-AI-Data-Stream": "v1",
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          "Connection": "keep-alive",
+          "x-vercel-ai-ui-message-stream": "v1",
+          "x-accel-buffering": "no",
         },
-        body: stream,
+        body,
       });
     });
 
