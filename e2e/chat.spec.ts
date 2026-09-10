@@ -6,14 +6,13 @@ test.describe("Chat page e2e", () => {
   }) => {
     // Mock the AI API route — never call the real Gemini API
     await page.route("**/api/chat", async (route) => {
-      // AI SDK v7 uses the "UI Message Stream" protocol (SSE with JSON chunks),
-      // NOT the old v3 data-stream format (0:"text", e:{}, d:{} prefixed lines).
-      // Each chunk is an SSE "data:" line containing a JSON object with a "type" field.
+      // AI SDK v5 UI Message Stream protocol outputs SSE JSON lines with text-delta chunks.
+      // Do NOT include `data: [DONE]` as it causes JSON.parse errors in the client SDK reader.
       const body = [
-        `data: {"type":"text","text":"I am the portfolio AI assistant. I can tell you about my projects and background."}`,
-        `data: {"type":"finish","finishReason":"stop","usage":{"promptTokens":0,"completionTokens":0}}`,
-        `data: [DONE]`,
-      ].join("\n\n") + "\n\n";
+        `data: {"type":"text-delta","textDelta":"I am the portfolio AI assistant. I can tell you about my projects and background."}`,
+        `data: {"type":"finish","finishReason":"stop"}`,
+        ``,
+      ].join("\n\n");
 
       await route.fulfill({
         status: 200,
