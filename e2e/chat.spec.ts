@@ -6,11 +6,15 @@ test.describe("Chat page e2e", () => {
   }) => {
     // Mock the AI API route — never call the real Gemini API
     await page.route("**/api/chat", async (route) => {
-      // AI SDK v5 UI Message Stream protocol outputs SSE JSON lines with text-delta chunks.
+      // AI SDK v5 UI Message Stream protocol requires text-start/text-delta/text-end
+      // chunks keyed by a shared `id`, with `delta` (not `textDelta`) carrying the text.
       // Do NOT include `data: [DONE]` as it causes JSON.parse errors in the client SDK reader.
       const body = [
-        `data: {"type":"text-delta","textDelta":"I am the portfolio AI assistant. I can tell you about my projects and background."}`,
-        `data: {"type":"finish","finishReason":"stop"}`,
+        `data: {"type":"start"}`,
+        `data: {"type":"text-start","id":"msg_1"}`,
+        `data: {"type":"text-delta","id":"msg_1","delta":"I am the portfolio AI assistant. I can tell you about my projects and background."}`,
+        `data: {"type":"text-end","id":"msg_1"}`,
+        `data: {"type":"finish"}`,
         ``,
       ].join("\n\n");
 
