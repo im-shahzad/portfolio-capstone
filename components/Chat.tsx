@@ -19,6 +19,12 @@ import {
   ProjectCardError,
 } from "./ProjectCard";
 import {
+  FitCardLoading,
+  FitCardFetching,
+  FitCardResult,
+  FitCardError,
+} from "./FitCard";
+import {
   MAX_MESSAGES_PER_CONVERSATION,
   SUGGESTED_QUESTIONS,
 } from "@/lib/chatConfig";
@@ -323,7 +329,9 @@ export default function Chat() {
                       ? part.type.slice(5)
                       : undefined;
 
-                if (toolName !== "getProjectInfo") return null;
+                if (toolName !== "getProjectInfo" && toolName !== "checkJobFit") {
+                  return null;
+                }
 
                 const state = (part as Record<string, unknown>).state as
                   | string
@@ -334,6 +342,36 @@ export default function Chat() {
                 const errorText = (part as Record<string, unknown>).errorText as
                   | string
                   | undefined;
+
+                if (toolName === "checkJobFit") {
+                  if (state === "input-streaming") {
+                    return <FitCardLoading key={`tool-${i}`} />;
+                  }
+
+                  if (state === "input-available") {
+                    return <FitCardFetching key={`tool-${i}`} />;
+                  }
+
+                  if (state === "output-available" && output) {
+                    if (output.error) return <FitCardError key={`tool-${i}`} />;
+                    return (
+                      <FitCardResult
+                        key={`tool-${i}`}
+                        data={{
+                          matchingSkills: output.matchingSkills as string[],
+                          gaps: output.gaps as string[],
+                          overallAssessment: output.overallAssessment as string,
+                        }}
+                      />
+                    );
+                  }
+
+                  if (state === "output-error" || errorText) {
+                    return <FitCardError key={`tool-${i}`} />;
+                  }
+
+                  return <FitCardLoading key={`tool-${i}`} />;
+                }
 
                 if (state === "input-streaming") {
                   return <ProjectCardLoading key={`tool-${i}`} />;
