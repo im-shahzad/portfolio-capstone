@@ -1,17 +1,37 @@
-// import Disclosure from '@/components/playground/Disclosure';
+import dynamic from "next/dynamic";
 
-// export default function PlaygroundPage() {
-//   return (
-//     <div style={{ padding: '2rem' }}>
-//       <h1>Playground</h1>
-//       <Disclosure />
-//     </div>
-//   );
-// }
+const Disclosure = dynamic(() => import("@/components/playground/Disclosure"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-pulse space-y-2">
+      <div className="h-10 w-full rounded-lg bg-[#2A241E] border border-[#352E26]" />
+      <div className="h-20 w-full rounded-lg bg-[#2A241E] border border-[#352E26]" />
+    </div>
+  ),
+});
 
-import Disclosure from '@/components/playground/Disclosure';
-import Tabs from '@/components/playground/Tabs';
-import Modal from '@/components/playground/Modal';
+const Tabs = dynamic(() => import("@/components/playground/Tabs"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-pulse space-y-3">
+      <div className="flex gap-2">
+        <div className="h-8 w-20 rounded bg-[#2A241E]" />
+        <div className="h-8 w-20 rounded bg-[#2A241E]" />
+        <div className="h-8 w-20 rounded bg-[#2A241E]" />
+      </div>
+      <div className="h-32 w-full rounded-lg bg-[#2A241E] border border-[#352E26]" />
+    </div>
+  ),
+});
+
+const Modal = dynamic(() => import("@/components/playground/Modal"), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-pulse">
+      <div className="h-10 w-32 rounded-lg bg-[#2A241E] border border-[#352E26]" />
+    </div>
+  ),
+});
 
 export default function PlaygroundPage() {
   return (
