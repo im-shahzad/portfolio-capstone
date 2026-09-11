@@ -5,9 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --color-bg: #1C1917;
-  --color-text: #F2EDE4;
-  --color-accent: #D9A441;
+  --color-bg: var(--brand-bg);
+  --color-text: var(--brand-text);
+  --color-accent: var(--brand-accent);
   --font-heading: var(--font-fraunces, serif);
   --font-body: var(--font-inter, sans-serif);
   --font-sans: var(--font-sans);
@@ -83,6 +83,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 :root {
+  --brand-bg: #F7F3EC;
+  --brand-text: #1C1917;
+  --brand-accent: #D9A441;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -118,6 +121,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .dark {
+  --brand-bg: #1C1917;
+  --brand-text: #F2EDE4;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -150,6 +155,13 @@ h1, h2, h3, h4, h5, h6 {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+
+/* Brand accent switcher — orthogonal to light/dark, so not redefined in .dark */
+[data-accent="amber"]   { --brand-accent: #D9A441; }
+[data-accent="emerald"] { --brand-accent: #10B981; }
+[data-accent="violet"]  { --brand-accent: #8B5CF6; }
+[data-accent="cyan"]    { --brand-accent: #22D3EE; }
+[data-accent="red"]     { --brand-accent: #EF4444; }
 
 /* ─── Send-button animation keyframes ─── */
 

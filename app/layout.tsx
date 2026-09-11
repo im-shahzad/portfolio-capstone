@@ -3,6 +3,10 @@ import { Fraunces, Inter, Geist } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { AccentProvider } from "@/components/theme/accent-provider";
+
+const ACCENT_NO_FLASH_SCRIPT = `try{var a=localStorage.getItem("portfolio-accent");if(a)document.documentElement.setAttribute("data-accent",a);}catch(e){}`;
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
@@ -29,16 +33,24 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn("h-full", "antialiased", fraunces.variable, inter.variable, "font-sans", geist.variable)}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: ACCENT_NO_FLASH_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-bg text-text font-body px-6">
-        <header>
-          <NavBar />
-        </header>
-        {children}
-        <footer className="mx-auto w-full max-w-screen-xl px-6 py-6 mt-auto border-t border-white/10 text-sm text-[#A89F93]">
-          <p>&copy; {new Date().getFullYear()} Shahzad. All rights reserved.</p>
-        </footer>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          <AccentProvider>
+            <header>
+              <NavBar />
+            </header>
+            {children}
+            <footer className="mx-auto w-full max-w-screen-xl px-6 py-6 mt-auto border-t border-white/10 text-sm text-[#A89F93]">
+              <p>&copy; {new Date().getFullYear()} Shahzad. All rights reserved.</p>
+            </footer>
+          </AccentProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

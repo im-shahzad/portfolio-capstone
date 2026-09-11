@@ -14,6 +14,12 @@
 export const CHAT_MODEL = 'gemini-flash-lite-latest';
 
 /**
+ * Single source of truth for the contact address, referenced by the system
+ * prompt, the conversation-cap error message, and UI components (Chat, SocialLinks).
+ */
+export const CONTACT_EMAIL = 'imshahzad000@gmail.com';
+
+/**
  * Basic Abuse Safeguards for Public Portfolio:
  * - MAX_MESSAGES_PER_CONVERSATION: Capped to 20 messages per session to prevent burning free tier quota.
  * - MAX_MESSAGE_CHARACTERS: Capped to 2000 characters per single message to avoid payload flooding.

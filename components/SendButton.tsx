@@ -109,10 +109,10 @@ export default function SendButton({
     ? "bg-rose-600"
     : isSuccess
       ? "bg-emerald-500"
-      : "bg-[#D9A441]";
+      : "bg-accent";
 
   // Text/icon color per state
-  const fgColor = isError || isSuccess ? "text-white" : "text-[#1C1917]";
+  const fgColor = isError || isSuccess ? "text-white" : "text-bg";
 
   // Shake class — only on error, CSS handles prefers-reduced-motion
   const shakeClass = isError ? "send-btn-shake" : "";
@@ -150,9 +150,9 @@ export default function SendButton({
         bgColor,
         fgColor,
         // Hover: lift + glow (idle only — disabled states don't get hover)
-        "enabled:hover:translate-y-[-2px] enabled:hover:shadow-[0_4px_16px_rgba(217,164,65,0.35)]",
+        "enabled:hover:translate-y-[-2px] enabled:hover:shadow-[0_4px_16px_color-mix(in_srgb,var(--brand-accent)_35%,transparent)]",
         // Focus ring: always visible, keyboard-accessible
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#D9A441]",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         // Active: slight press-down
         "enabled:active:scale-95",
         // Disabled styling

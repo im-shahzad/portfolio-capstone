@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import ChatMessage from "./ChatMessage";
 import SendButton from "./SendButton";
+import ContactWidget from "./ContactWidget";
 import {
   ProjectCardLoading,
   ProjectCardFetching,
@@ -21,6 +22,7 @@ import {
 import {
   MAX_MESSAGES_PER_CONVERSATION,
   SUGGESTED_QUESTIONS,
+  CONTACT_EMAIL,
 } from "@/lib/chatConfig";
 
 /**
@@ -194,18 +196,18 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-3xl mx-auto h-[640px] sm:h-[700px] bg-[#1C1917] border border-[#2F2923] rounded-2xl shadow-2xl overflow-hidden font-body text-[#F2EDE4]">
+    <div className="flex flex-col w-full max-w-3xl mx-auto h-[640px] sm:h-[700px] bg-bg border border-border rounded-2xl shadow-2xl overflow-hidden font-body text-text">
       {/* Header Bar */}
-      <header className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-[#231F1B] border-b border-[#2F2923]">
+      <header className="flex items-center justify-between px-4 sm:px-6 py-3.5 bg-card border-b border-border">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#2E271F] border border-[#D9A441]/50 text-[#D9A441]">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent/10 border border-accent/50 text-accent">
             <Sparkles className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-sm sm:text-base font-semibold text-[#F2EDE4] font-heading leading-none">
+            <h2 className="text-sm sm:text-base font-semibold text-text font-heading leading-none">
               Portfolio AI Assistant
             </h2>
-            <p className="text-xs text-[#A89F93] mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               Powered by Google Gemini Flash-Lite
             </p>
           </div>
@@ -221,7 +223,7 @@ export default function Chat() {
                 ? "bg-rose-950/60 border-rose-700/50 text-rose-300"
                 : messageCount > 14
                 ? "bg-amber-950/60 border-amber-600/50 text-amber-300"
-                : "bg-[#2A241E] border-[#3C342A] text-[#B8AF9F]"
+                : "bg-muted border-border text-muted-foreground"
             }`}
           >
             {messageCount}/{MAX_MESSAGES_PER_CONVERSATION} msgs
@@ -233,7 +235,7 @@ export default function Chat() {
               onClick={handleResetChat}
               title="Reset conversation"
               aria-label="Reset conversation"
-              className="p-1.5 rounded-lg text-[#A89F93] outline-none hover:text-[#F2EDE4] hover:bg-[#2F2923] focus-visible:ring-2 focus-visible:ring-[#D9A441] transition-colors"
+              className="p-1.5 rounded-lg text-muted-foreground outline-none hover:text-text hover:bg-muted focus-visible:ring-2 focus-visible:ring-accent transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
@@ -255,18 +257,18 @@ export default function Chat() {
         {/* Empty State / Welcome Suggestions */}
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center px-4 py-8 max-w-lg mx-auto">
-            <div className="w-12 h-12 rounded-2xl bg-[#2A241D] border border-[#D9A441]/40 flex items-center justify-center text-[#D9A441] mb-4 shadow-md">
+            <div className="w-12 h-12 rounded-2xl bg-accent/10 border border-accent/40 flex items-center justify-center text-accent mb-4 shadow-md">
               <Sparkles className="w-6 h-6" />
             </div>
-            <h3 className="text-lg sm:text-xl font-bold font-heading text-[#F2EDE4] mb-2">
+            <h3 className="text-lg sm:text-xl font-bold font-heading text-text mb-2">
               Ask Me Anything
             </h3>
-            <p className="text-xs sm:text-sm text-[#A89F93] mb-6 leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-6 leading-relaxed">
               I can answer questions about my engineering background, AI projects like the Meme Caption Generator, and why I&apos;m seeking an AI Engineering internship.
             </p>
 
             <div className="w-full space-y-2 text-left">
-              <p className="text-xs uppercase tracking-wider font-semibold text-[#D9A441] pl-1">
+              <p className="text-xs uppercase tracking-wider font-semibold text-accent pl-1">
                 Suggested Questions
               </p>
               <div className="grid grid-cols-1 gap-2">
@@ -275,14 +277,16 @@ export default function Chat() {
                     key={idx}
                     onClick={() => handleSubmitMessage(question)}
                     disabled={isGenerating}
-                    className="w-full text-left px-3.5 py-2.5 rounded-xl bg-[#241F1A] hover:bg-[#2E2822] border border-[#352E26] hover:border-[#D9A441]/40 text-xs sm:text-sm text-[#E6E0D6] outline-none focus-visible:ring-2 focus-visible:ring-[#D9A441] transition-all duration-150 flex items-center justify-between group"
+                    className="w-full text-left px-3.5 py-2.5 rounded-xl bg-card hover:bg-muted border border-border hover:border-accent/40 text-xs sm:text-sm text-text outline-none focus-visible:ring-2 focus-visible:ring-accent transition-all duration-150 flex items-center justify-between group"
                   >
                     <span>{question}</span>
-                    <Sparkles className="w-3.5 h-3.5 text-[#D9A441] opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2" />
+                    <Sparkles className="w-3.5 h-3.5 text-accent opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-2" />
                   </button>
                 ))}
               </div>
             </div>
+
+            <ContactWidget className="mt-6 w-full" />
           </div>
         )}
 
@@ -376,17 +380,17 @@ export default function Chat() {
             data-testid="thinking-indicator"
             className="flex items-center gap-3 py-3"
           >
-            <div className="w-8 h-8 rounded-full bg-[#2A241D] border border-[#D9A441]/40 flex items-center justify-center text-[#D9A441] flex-shrink-0 animate-pulse">
+            <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/40 flex items-center justify-center text-accent flex-shrink-0 animate-pulse">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div className="bg-[#201C18] border border-[#332C24] rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex items-center gap-3">
-              <span className="text-xs sm:text-sm text-[#D9A441] font-medium">
+            <div className="bg-card border border-border rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex items-center gap-3">
+              <span className="text-xs sm:text-sm text-accent font-medium">
                 Shahzad is thinking
               </span>
               <div className="flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] animate-bounce [animation-delay:-0.3s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] animate-bounce [animation-delay:-0.15s]" />
-                <span className="w-1.5 h-1.5 rounded-full bg-[#D9A441] animate-bounce" />
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce [animation-delay:-0.3s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce [animation-delay:-0.15s]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-bounce" />
               </div>
             </div>
           </div>
@@ -403,10 +407,10 @@ export default function Chat() {
             onClick={scrollToBottom}
             data-testid="scroll-to-bottom-btn"
             aria-label="Scroll to bottom of conversation"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#2B251E] border border-[#D9A441]/50 text-xs text-[#F2EDE4] shadow-lg outline-none hover:bg-[#383027] focus-visible:ring-2 focus-visible:ring-[#D9A441] transition-all animate-bounce"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-accent/50 text-xs text-text shadow-lg outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-accent transition-all animate-bounce"
           >
             <span>Scroll to bottom</span>
-            <ArrowDown className="w-3.5 h-3.5 text-[#D9A441]" />
+            <ArrowDown className="w-3.5 h-3.5 text-accent" />
           </button>
         </div>
       )}
@@ -439,24 +443,24 @@ export default function Chat() {
       {isCapReached && (
         <div
           data-testid="cap-reached-banner"
-          className="mx-3 sm:mx-6 mb-2 p-3 rounded-xl bg-[#2A2219] border border-[#D9A441]/40 text-xs sm:text-sm text-[#E8DFC9] flex items-start gap-2.5"
+          className="mx-3 sm:mx-6 mb-2 p-3 rounded-xl bg-accent/10 border border-accent/40 text-xs sm:text-sm text-text flex items-start gap-2.5"
         >
-          <Info className="w-4 h-4 text-[#D9A441] flex-shrink-0 mt-0.5" />
+          <Info className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <span>
               Conversation limit reached ({MAX_MESSAGES_PER_CONVERSATION} messages). To protect the free tier quota, click{" "}
               <button
                 onClick={handleResetChat}
-                className="rounded-sm text-[#D9A441] font-semibold underline underline-offset-2 outline-none hover:text-[#F3C46C] focus-visible:ring-2 focus-visible:ring-[#D9A441]"
+                className="rounded-sm text-accent font-semibold underline underline-offset-2 outline-none hover:text-accent/80 focus-visible:ring-2 focus-visible:ring-accent"
               >
                 Reset
               </button>{" "}
               or email me directly at{" "}
               <a
-                href="mailto:imshahzad000@gmail.com"
-                className="text-[#D9A441] font-semibold underline underline-offset-2 hover:text-[#F3C46C]"
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="text-accent font-semibold underline underline-offset-2 hover:text-accent/80"
               >
-                imshahzad000@gmail.com
+                {CONTACT_EMAIL}
               </a>
               .
             </span>
@@ -465,13 +469,13 @@ export default function Chat() {
       )}
 
       {/* Input Area (Mobile-friendly, responsive) */}
-      <footer className="p-3 sm:p-4 bg-[#231F1B] border-t border-[#2F2923]">
+      <footer className="p-3 sm:p-4 bg-card border-t border-border">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmitMessage();
           }}
-          className="relative flex items-end gap-2 bg-[#191614] border border-[#383129] focus-within:border-[#D9A441]/70 focus-within:ring-1 focus-within:ring-[#D9A441]/50 rounded-xl p-1.5 sm:p-2 transition-all"
+          className="relative flex items-end gap-2 bg-background border border-border focus-within:border-accent/70 focus-within:ring-1 focus-within:ring-accent/50 rounded-xl p-1.5 sm:p-2 transition-all"
         >
           {/* Multi-line auto-growing textarea */}
           <textarea
@@ -488,7 +492,7 @@ export default function Chat() {
                 : "Ask about my projects, GenAI engineering, or background... (Enter to send)"
             }
             rows={1}
-            className="flex-1 bg-transparent border-0 resize-none px-2.5 py-1.5 text-[16px] sm:text-sm text-[#F2EDE4] placeholder-[#8A8175] focus:outline-hidden disabled:opacity-50 min-h-[38px] max-h-[140px] overflow-y-auto leading-relaxed"
+            className="flex-1 bg-transparent border-0 resize-none px-2.5 py-1.5 text-[16px] sm:text-sm text-text placeholder-muted-foreground focus:outline-hidden disabled:opacity-50 min-h-[38px] max-h-[140px] overflow-y-auto leading-relaxed"
           />
 
           {/* Action Buttons: Stop button during generation, Send button otherwise */}
@@ -500,7 +504,7 @@ export default function Chat() {
                 data-testid="stop-button"
                 title="Stop generating"
                 aria-label="Stop generating response"
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#3A2C21] hover:bg-[#4A382B] text-[#D9A441] border border-[#D9A441]/40 text-xs sm:text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-[#D9A441] transition-all min-h-[40px] shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-accent/10 hover:bg-accent/20 text-accent border border-accent/40 text-xs sm:text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-accent transition-all min-h-[40px] shadow-sm active:scale-95"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
                 <span className="hidden xs:inline">Stop</span>
@@ -516,8 +520,8 @@ export default function Chat() {
           </div>
         </form>
 
-        <p className="text-[11px] text-center text-[#968C7F] mt-2 hidden sm:block">
-          Press <kbd className="px-1 py-0.5 rounded bg-[#2A241E] border border-[#3C342A] text-[10px] font-mono text-[#D9A441]">Enter</kbd> to send, <kbd className="px-1 py-0.5 rounded bg-[#2A241E] border border-[#3C342A] text-[10px] font-mono text-[#D9A441]">Shift + Enter</kbd> for a new line.
+        <p className="text-[11px] text-center text-muted-foreground mt-2 hidden sm:block">
+          Press <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono text-accent">Enter</kbd> to send, <kbd className="px-1 py-0.5 rounded bg-muted border border-border text-[10px] font-mono text-accent">Shift + Enter</kbd> for a new line.
         </p>
       </footer>
     </div>

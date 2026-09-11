@@ -79,7 +79,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-5" data-testid="contact-form">
+    <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5" data-testid="contact-form">
       <div>
         <label
           htmlFor="name"

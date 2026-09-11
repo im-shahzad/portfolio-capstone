@@ -26,7 +26,7 @@ function FormattedText({ content }: { content: string }) {
           return (
             <pre
               key={pIdx}
-              className="p-3 my-2 rounded-lg bg-[#141210] border border-[#2D2824] text-xs sm:text-sm font-mono overflow-x-auto text-[#E4DFD7]"
+              className="p-3 my-2 rounded-lg bg-background border border-border text-xs sm:text-sm font-mono overflow-x-auto text-text"
             >
               <code>{code}</code>
             </pre>
@@ -43,7 +43,7 @@ function FormattedText({ content }: { content: string }) {
               {lines.map((line, lIdx) => {
                 const cleanLine = line.replace(/^[-*]\s+|\d+\.\s+/, "");
                 return (
-                  <li key={lIdx} className="text-[#E8E3DA]">
+                  <li key={lIdx} className="text-text">
                     <InlineFormatted text={cleanLine} />
                   </li>
                 );
@@ -54,7 +54,7 @@ function FormattedText({ content }: { content: string }) {
 
         // Standard paragraph
         return (
-          <p key={pIdx} className="text-[#F2EDE4]/95">
+          <p key={pIdx} className="text-text/95">
             {lines.map((line, lIdx) => (
               <React.Fragment key={lIdx}>
                 {lIdx > 0 && <br />}
@@ -91,7 +91,7 @@ function InlineFormatted({ text }: { text: string }) {
               href={href}
               target={href.startsWith("http") ? "_blank" : undefined}
               rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="text-[#D9A441] underline underline-offset-4 font-medium hover:text-[#E9B858] transition-colors"
+              className="text-accent underline underline-offset-4 font-medium hover:text-accent/80 transition-colors"
             >
               {label}
             </a>
@@ -101,7 +101,7 @@ function InlineFormatted({ text }: { text: string }) {
         // Bold: **text**
         if (part.startsWith("**") && part.endsWith("**") && part.length >= 4) {
           return (
-            <strong key={index} className="font-semibold text-[#FFFFFF]">
+            <strong key={index} className="font-semibold text-foreground">
               {part.slice(2, -2)}
             </strong>
           );
@@ -112,7 +112,7 @@ function InlineFormatted({ text }: { text: string }) {
           return (
             <code
               key={index}
-              className="px-1.5 py-0.5 rounded bg-[#161311] border border-[#342F2B] text-xs font-mono text-[#D9A441]"
+              className="px-1.5 py-0.5 rounded bg-background border border-border text-xs font-mono text-accent"
             >
               {part.slice(1, -1)}
             </code>
@@ -151,7 +151,7 @@ export default function ChatMessage({
       {!isUser && (
         <div
           aria-hidden="true"
-          className="flex-shrink-0 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A241D] border border-[#D9A441]/40 text-[#D9A441] shadow-sm mt-0.5"
+          className="flex-shrink-0 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-accent/10 border border-accent/40 text-accent shadow-sm mt-0.5"
         >
           <Sparkles className="w-4 h-4" />
         </div>
@@ -161,15 +161,15 @@ export default function ChatMessage({
       <div
         className={`relative max-w-[85%] sm:max-w-[78%] md:max-w-[72%] rounded-2xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-sm transition-all duration-200 ${
           isUser
-            ? "bg-[#282420] border border-[#3D3731] text-[#F2EDE4] rounded-br-sm"
-            : "bg-[#201C18] border border-[#332C24] text-[#F2EDE4] rounded-bl-sm"
+            ? "bg-muted border border-border text-text rounded-br-sm"
+            : "bg-card border border-border text-text rounded-bl-sm"
         }`}
       >
         {/* Header/Label */}
-        <div className="flex items-center justify-between gap-3 mb-1.5 pb-1 border-b border-[#352E27]/50 text-xs">
+        <div className="flex items-center justify-between gap-3 mb-1.5 pb-1 border-b border-border/50 text-xs">
           <span
             className={`font-semibold tracking-wide flex items-center gap-1.5 ${
-              isUser ? "text-[#D9A441]" : "text-[#D9A441]"
+              isUser ? "text-accent" : "text-accent"
             }`}
           >
             {isUser ? "You" : "Shahzad (AI Assistant)"}
@@ -180,7 +180,7 @@ export default function ChatMessage({
               onClick={handleCopy}
               title="Copy answer"
               aria-label={copied ? "Answer copied to clipboard" : "Copy answer to clipboard"}
-              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1 -mr-1 rounded outline-none hover:bg-[#2F2922] text-[#A69E92] hover:text-[#F2EDE4] focus-visible:ring-2 focus-visible:ring-[#D9A441]"
+              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1 -mr-1 rounded outline-none hover:bg-muted text-muted-foreground hover:text-text focus-visible:ring-2 focus-visible:ring-accent"
             >
               {copied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-400" />
@@ -198,7 +198,7 @@ export default function ChatMessage({
         {isStreaming && (
           <span
             aria-hidden="true"
-            className="inline-block w-2 h-4 ml-1 align-middle bg-[#D9A441] animate-pulse rounded-xs"
+            className="inline-block w-2 h-4 ml-1 align-middle bg-accent animate-pulse rounded-xs"
           />
         )}
       </div>
@@ -207,7 +207,7 @@ export default function ChatMessage({
       {isUser && (
         <div
           aria-hidden="true"
-          className="flex-shrink-0 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#292522] border border-[#453F38] text-[#F2EDE4] shadow-sm mt-0.5"
+          className="flex-shrink-0 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-muted border border-border text-text shadow-sm mt-0.5"
         >
           <User className="w-4 h-4" />
         </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Chat from "@/components/Chat";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import { Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -26,7 +27,9 @@ export default function ChatPage() {
       </div>
 
       {/* Main Chat Interface */}
-      <Chat />
+      <ErrorBoundary>
+        <Chat />
+      </ErrorBoundary>
     </main>
   );
 }
