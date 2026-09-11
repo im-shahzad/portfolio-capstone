@@ -32,8 +32,13 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", fraunces.variable, inter.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col bg-bg text-text font-body px-6">
-        <NavBar />
+        <header>
+          <NavBar />
+        </header>
         {children}
+        <footer className="mx-auto w-full max-w-screen-xl px-6 py-6 mt-auto border-t border-white/10 text-sm text-[#A89F93]">
+          <p>&copy; {new Date().getFullYear()} Shahzad. All rights reserved.</p>
+        </footer>
       </body>
     </html>
   );

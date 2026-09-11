@@ -15,7 +15,10 @@ export default function NavBar() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-6 mx-auto w-full max-w-screen-xl px-6 py-5 bg-bg text-text font-body">
+    <nav
+      aria-label="Primary"
+      className="flex items-center gap-6 mx-auto w-full max-w-screen-xl px-6 py-5 bg-bg text-text font-body"
+    >
       <ul className="flex flex-wrap gap-6 list-none m-0 p-0">
         {links.map((link) => (
           <li key={link.href}>
@@ -23,9 +26,10 @@ export default function NavBar() {
               href={link.href}
               aria-current={pathname === link.href ? "page" : undefined}
               className={
-                pathname === link.href
+                "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg " +
+                (pathname === link.href
                   ? "text-accent font-semibold"
-                  : "text-text opacity-80 hover:opacity-100"
+                  : "text-text opacity-80 hover:opacity-100")
               }
             >
               {link.label}

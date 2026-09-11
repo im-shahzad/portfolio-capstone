@@ -179,8 +179,8 @@ export default function ChatMessage({
             <button
               onClick={handleCopy}
               title="Copy answer"
-              aria-label="Copy answer to clipboard"
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-1 rounded hover:bg-[#2F2922] text-[#A69E92] hover:text-[#F2EDE4]"
+              aria-label={copied ? "Answer copied to clipboard" : "Copy answer to clipboard"}
+              className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity p-1 -mr-1 rounded outline-none hover:bg-[#2F2922] text-[#A69E92] hover:text-[#F2EDE4] focus-visible:ring-2 focus-visible:ring-[#D9A441]"
             >
               {copied ? (
                 <Check className="w-3.5 h-3.5 text-emerald-400" />

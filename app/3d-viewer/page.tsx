@@ -137,12 +137,13 @@ export default function ModelViewerPage() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 text-sm">
-        <label className="cursor-pointer rounded-md border px-3 py-1.5 hover:bg-muted">
+        <label className="cursor-pointer rounded-md border px-3 py-1.5 outline-none hover:bg-muted has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent has-[:focus-visible]:ring-offset-2">
           Browse file
           <input
             type="file"
             accept=".glb,.gltf"
-            className="hidden"
+            aria-label="Upload a .glb or .gltf 3D model file"
+            className="sr-only"
             onChange={handleFileInputChange}
           />
         </label>
@@ -152,7 +153,7 @@ export default function ModelViewerPage() {
             <button
               type="button"
               onClick={handleReset}
-              className="rounded-md border px-3 py-1.5 hover:bg-muted"
+              className="rounded-md border px-3 py-1.5 outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
             >
               Reset to default
             </button>

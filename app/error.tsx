@@ -39,7 +39,7 @@ export default function Error({
 
         <button
           onClick={() => reset()}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#D9A441] text-[#1C1917] text-sm font-semibold hover:bg-[#E5B255] transition-colors active:scale-95"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#D9A441] text-[#1C1917] text-sm font-semibold outline-none hover:bg-[#E5B255] focus-visible:ring-2 focus-visible:ring-[#D9A441] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1C1917] transition-colors active:scale-95"
         >
           Try again
         </button>

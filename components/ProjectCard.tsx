@@ -63,7 +63,8 @@ export function ProjectCardResult({ data }: { data: ProjectData }) {
               href={data.repoLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1 text-xs text-[#D9A441] hover:text-[#F3C46C] transition-colors font-medium mt-1 flex-shrink-0"
+              aria-label={`View ${data.name} repository (opens in a new tab)`}
+              className="flex items-center gap-1 rounded-sm text-xs text-[#D9A441] outline-none hover:text-[#F3C46C] focus-visible:ring-2 focus-visible:ring-[#D9A441] transition-colors font-medium mt-1 flex-shrink-0"
             >
               Repo
               <ExternalLink className="w-3 h-3" />
@@ -105,7 +106,7 @@ export function ProjectCardError() {
           <p className="text-sm text-[#A89F93] font-medium">
             Couldn&apos;t load project details right now.
           </p>
-          <p className="text-xs text-[#7E7569] mt-0.5">
+          <p className="text-xs text-[#968C7F] mt-0.5">
             Feel free to ask me anything else.
           </p>
         </div>
