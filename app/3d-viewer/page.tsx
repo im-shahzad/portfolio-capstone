@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { useControls } from "leva";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { MaterialControlsValues } from "@/components/three/MaterialControls";
+import type { MaterialConfig } from "@/components/three/types";
 
 const ModelViewerCanvas = dynamic(
   () => import("@/components/three/ModelViewerCanvas"),
@@ -13,6 +14,21 @@ const ModelViewerCanvas = dynamic(
     loading: () => <CanvasFallback />,
   }
 );
+
+// The `leva` package (panel UI + store) is only fetched once this actually
+// mounts, keeping it out of the route's initial JS/TBT budget.
+const MaterialControls = dynamic(
+  () => import("@/components/three/MaterialControls"),
+  { ssr: false }
+);
+
+const DEFAULT_MATERIAL: MaterialConfig = {
+  color: "#3b82f6",
+  metalness: 0.5,
+  roughness: 0.4,
+  wireframe: false,
+};
+const DEFAULT_AUTO_ROTATE_SPEED = 2;
 
 function CanvasFallback() {
   return (
@@ -34,16 +50,40 @@ export default function ModelViewerPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const objectUrlRef = useRef<string | null>(null);
 
-  const { color, metalness, roughness, wireframe, autoRotateSpeed } = useControls(
-    "Material",
-    {
-      color: "#3b82f6",
-      metalness: { value: 0.5, min: 0, max: 1, step: 0.01 },
-      roughness: { value: 0.4, min: 0, max: 1, step: 0.01 },
-      wireframe: false,
-      autoRotateSpeed: { value: 2, min: 0, max: 10, step: 0.1, label: "Auto-Rotate Speed" },
-    }
+  const [material, setMaterial] = useState<MaterialConfig>(DEFAULT_MATERIAL);
+  const [autoRotateSpeed, setAutoRotateSpeed] = useState(DEFAULT_AUTO_ROTATE_SPEED);
+
+  // In development the controls mount immediately for a responsive tuning
+  // experience. In production, mounting (and therefore fetching/running
+  // leva's JS) is deferred until the browser is idle so it never competes
+  // with the critical render path and doesn't count against Lighthouse TBT.
+  const [controlsReady, setControlsReady] = useState(
+    process.env.NODE_ENV !== "production"
   );
+
+  useEffect(() => {
+    if (controlsReady) return;
+    const idle =
+      typeof window.requestIdleCallback === "function"
+        ? window.requestIdleCallback
+        : (cb: () => void) => window.setTimeout(cb, 200);
+    const cancelIdle =
+      typeof window.cancelIdleCallback === "function"
+        ? window.cancelIdleCallback
+        : window.clearTimeout;
+    const id = idle(() => setControlsReady(true));
+    return () => cancelIdle(id as number);
+  }, [controlsReady]);
+
+  const handleControlsChange = useCallback((values: MaterialControlsValues) => {
+    setMaterial({
+      color: values.color,
+      metalness: values.metalness,
+      roughness: values.roughness,
+      wireframe: values.wireframe,
+    });
+    setAutoRotateSpeed(values.autoRotateSpeed);
+  }, []);
 
   // Revoke the current blob URL on unmount to avoid leaking memory.
   useEffect(() => {
@@ -125,9 +165,11 @@ export default function ModelViewerPage() {
       >
         <ModelViewerCanvas
           modelUrl={modelUrl}
-          material={{ color, metalness, roughness, wireframe }}
+          material={material}
           autoRotateSpeed={autoRotateSpeed}
         />
+
+        {controlsReady && <MaterialControls onChange={handleControlsChange} />}
 
         {isDragging && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/40 text-lg font-medium text-white">
