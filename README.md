@@ -56,3 +56,19 @@ Visit `/playground/send-button` for an interactive demo with Force Success/Error
 | Success | Click "Force Success" then Send — green checkmark, auto-returns to idle |
 | Error | Click "Force Error" then Send — shake + red + retry icon; click to retry |
 | Reduced motion | DevTools → Rendering → emulate `prefers-reduced-motion: reduce` → shake disappears, color stays |
+
+
+
+### 3D GLB Model Viewer & Configurator (FE-AA2)
+
+**What was built:**
+An interactive 3D model viewer and material configurator built using React Three Fiber, `@react-three/drei`, and `leva`. Supports drag-and-drop loading for `.glb`/`.gltf` files with live material tweaking (color, roughness, metalness, wireframe mode, and auto-rotation).
+
+**Performance & FE-10 Lens Notes:**
+- **Lazy Loading**: Dynamically imported canvas (`ssr: false`) prevents Three.js bundle overhead on initial route loads.
+- **Bundle & Memory**: Clones GLTF scenes dynamically and revokes object URLs to avoid client memory leaks during drag-and-drop scene swaps.
+- **Frame Rate & Fallbacks**: Uses lightweight environment lighting and a `Suspense`-wrapped primitive fallback to maintain a steady 60 FPS on desktop and mobile.
+
+**Future Capstone Improvements:**
+- Add DRACO/meshopt decoder support to compress heavy GLTF models.
+- Save customized material states into URL search params or local storage for shareable 3D presets.
