@@ -1,34 +1,26 @@
-"use client";
-
 import Link from "next/link";
-import dynamic from "next/dynamic";
-import { Sparkles, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SocialLinks from "./SocialLinks";
+import LazyAccentSwitcher from "./LazyAccentSwitcher";
+import EnterChatButton from "./EnterChatButton";
 
-// Decorative, non-critical widget (small top-right accent-color switcher).
-// Lazy-loaded so its JS (useSyncExternalStore + MutationObserver wiring)
-// doesn't compete with the critical hero content during initial hydration.
-const AccentSwitcher = dynamic(() => import("./AccentSwitcher"), {
-  ssr: false,
-  loading: () => <div className="w-[104px] h-4 sm:w-[124px] sm:h-5" aria-hidden="true" />,
-});
+// Server Component: no "use client" here. Everything below is static markup
+// (the LCP heading/tagline, decorative gradients, links) that doesn't need
+// to be part of the client JS bundle or React's hydration pass at all.
+// The only interactive pieces — the accent switcher and the chat-entry
+// button — are small client "islands" imported from their own files, per
+// Next.js's recommended pattern for keeping Client Component boundaries as
+// deep/narrow as possible. This shrinks how much of the tree React needs to
+// reconcile during hydration (the biggest remaining TBT contributor once
+// framer-motion was removed and there was no more unused JS to trim).
 
 // Staggered reveal is done with plain CSS (.animate-fade-up + inline
-// animation-delay) instead of Framer Motion. Lighthouse showed 4.5s of TBT
-// driven by main-thread JS execution under CPU throttling; framer-motion
-// was only ever used on this route (Hero + PortfolioExperience), so cutting
-// it removes ~126KB of parse/execute cost from the critical path entirely
-// rather than just reordering when it runs.
+// animation-delay) instead of Framer Motion.
 const STAGGER_STEP_MS = 120;
 const STAGGER_BASE_MS = 200;
 const staggerDelay = (index: number) => `${STAGGER_BASE_MS + index * STAGGER_STEP_MS}ms`;
 
-interface HeroProps {
-  onEnterChat?: () => void;
-}
-
-export default function Hero({ onEnterChat }: HeroProps) {
+export default function Hero() {
   return (
     <section
       className={cn(
@@ -59,7 +51,7 @@ export default function Hero({ onEnterChat }: HeroProps) {
 
       {/* ── Top-right: theme + accent switcher ───────────────────── */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-10">
-        <AccentSwitcher />
+        <LazyAccentSwitcher />
       </div>
 
       {/* ── Content ─────────────────────────────────────────────── */}
@@ -73,10 +65,7 @@ export default function Hero({ onEnterChat }: HeroProps) {
         </div>
 
         {/* Name — rendered plain (not animated): this is the page's
-            LCP element, confirmed via PerformanceObserver. Wrapping it in
-            Framer Motion's fadeUp (opacity: 0 -> 1) delayed its painted
-            LCP timestamp by ~1.2s, since LCP only counts once JS hydrates
-            and drives the animation to opacity: 1. */}
+            LCP element, confirmed via PerformanceObserver. */}
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold font-heading text-text tracking-tight leading-[1.1]">
           Shahzad
         </h1>
@@ -89,20 +78,7 @@ export default function Hero({ onEnterChat }: HeroProps) {
 
         {/* CTA buttons */}
         <div className="flex flex-wrap items-center gap-4 mt-10 animate-fade-up" style={{ animationDelay: staggerDelay(1) }}>
-          <button
-            onClick={onEnterChat}
-            className={cn(
-              "group inline-flex items-center gap-2 px-6 py-3 rounded-xl",
-              "bg-accent text-accent-fg font-semibold",
-              "hover:brightness-110 active:scale-[0.98]",
-              "transition-all duration-200 outline-none",
-              "focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
-            )}
-          >
-            <Sparkles className="w-4 h-4" />
-            Chat with my AI
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-          </button>
+          <EnterChatButton />
 
           <Link
             href="/work"

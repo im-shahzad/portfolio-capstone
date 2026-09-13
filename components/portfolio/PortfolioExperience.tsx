@@ -3,22 +3,26 @@
 import { useState, useCallback } from "react";
 import { ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Hero from "./Hero";
 import ChatLoader from "@/components/ChatLoader";
+import { EnterChatContext } from "./ViewContext";
 
 type View = "hero" | "chat";
 
-export default function PortfolioExperience() {
+interface PortfolioExperienceProps {
+  // Server-rendered Hero, passed down from app/page.tsx (a Server
+  // Component) rather than imported here — Hero has no client JS of its
+  // own, so slotting it in as children means React only needs to hydrate
+  // this thin shell + the small EnterChatButton/AccentSwitcher islands
+  // inside it, not the whole hero subtree.
+  children: React.ReactNode;
+}
+
+export default function PortfolioExperience({ children }: PortfolioExperienceProps) {
   const [view, setView] = useState<View>("hero");
 
   // Skip the enter animation on the very first paint (page load) so the
   // hero's LCP text isn't gated behind a CSS opacity transition — later
   // hero/chat switches (user-triggered, post-mount) still get the fade.
-  // Same idea as Framer Motion's AnimatePresence initial={false}, without
-  // the library: framer-motion was only ever used in this file + Hero.tsx,
-  // and Lighthouse showed ~4.5s of TBT from main-thread JS execution under
-  // CPU throttling, so it's replaced here with a plain CSS animation that
-  // only turns on once the user actually switches views.
   const [animate, setAnimate] = useState(false);
   const transitionClass = animate ? "animate-view-fade-in" : "";
 
@@ -35,7 +39,7 @@ export default function PortfolioExperience() {
     <div className="relative w-full min-h-[calc(100vh-8rem)] overflow-hidden">
       {view === "hero" ? (
         <div key="hero" className={transitionClass}>
-          <Hero onEnterChat={enterChat} />
+          <EnterChatContext.Provider value={enterChat}>{children}</EnterChatContext.Provider>
         </div>
       ) : (
         <div

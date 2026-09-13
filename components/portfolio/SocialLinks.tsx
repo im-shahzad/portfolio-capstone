@@ -1,6 +1,3 @@
-"use client";
-
-import React from "react";
 import { Globe, Link2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
