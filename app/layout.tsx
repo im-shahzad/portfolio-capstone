@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter, Geist } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
+import NoFlashScript from "@/components/portfolio/NoFlashScript";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans',display:'swap'});
@@ -31,8 +32,12 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", fraunces.variable, inter.variable, "font-sans", geist.variable)}
+      suppressHydrationWarning
+      className={cn("h-full", "antialiased", "dark", fraunces.variable, inter.variable, "font-sans", geist.variable)}
     >
+      <head>
+        <NoFlashScript />
+      </head>
       <body className="min-h-full flex flex-col bg-bg text-text font-body px-6">
         <header>
           <NavBar />

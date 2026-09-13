@@ -1,159 +1,226 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 1 — Raw design tokens
+   All raw values live here. Components never consume these directly.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Surfaces ─────────────────────────────────────────────── */
+  --raw-bg:            #1C1917;
+  --raw-surface:       #231F1B;
+  --raw-surface-alt:   #2A241D;
+  --raw-surface-raised:#2E2822;
+  --raw-surface-inset: #191614;
+  --raw-surface-hover: #383027;
+
+  /* ── Borders ──────────────────────────────────────────────── */
+  --raw-border:        #2F2923;
+  --raw-border-subtle: #3C342A;
+  --raw-border-strong: #453F38;
+
+  /* ── Text ─────────────────────────────────────────────────── */
+  --raw-text:          #F2EDE4;
+  --raw-text-muted:    #A89F93;
+  --raw-text-dim:      #8A8175;
+  --raw-text-faint:    #968C7F;
+  --raw-text-strong:   #FFFFFF;
+
+  /* ── Accent (default: gold) ───────────────────────────────── */
+  --raw-accent:        #D9A441;
+  --raw-accent-hover:  #F3C46C;
+  --raw-accent-muted:  #D9A44133;
+
+  /* ── Semantic ─────────────────────────────────────────────── */
+  --raw-error:         #DC2626;
+  --raw-error-surface: #7F1D1D;
+  --raw-success:       #7FB88F;
+
+  /* ── Fonts ────────────────────────────────────────────────── */
+  --raw-font-heading:  var(--font-fraunces, serif);
+  --raw-font-body:     var(--font-inter, sans-serif);
+  --raw-font-sans:     var(--font-sans);
+  --raw-font-mono:     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* ── Radius ───────────────────────────────────────────────── */
+  --raw-radius:        0.625rem;
+  --raw-radius-sm:     0.375rem;
+  --raw-radius-lg:     0.75rem;
+  --raw-radius-xl:     1rem;
+  --raw-radius-2xl:    1.25rem;
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --raw-shadow-sm:     0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --raw-shadow-md:     0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --raw-shadow-lg:     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --raw-shadow-xl:     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ── Transition ───────────────────────────────────────────── */
+  --raw-transition:    150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 2 — Accent tokens via data-accent attribute
+   Swap the entire accent palette by changing one data attribute on <html>.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Default accent: gold */
+[data-accent="gold"],
+:root {
+  --accent:            var(--raw-accent);
+  --accent-hover:      var(--raw-accent-hover);
+  --accent-muted:      var(--raw-accent-muted);
+  --accent-fg:         var(--raw-bg);
+}
+
+[data-accent="emerald"] {
+  --accent:            #10B981;
+  --accent-hover:      #34D399;
+  --accent-muted:      #10B98133;
+  --accent-fg:         #022C22;
+}
+
+[data-accent="violet"] {
+  --accent:            #8B5CF6;
+  --accent-hover:      #A78BFA;
+  --accent-muted:      #8B5CF633;
+  --accent-fg:         #1E1B4B;
+}
+
+[data-accent="rose"] {
+  --accent:            #F43F5E;
+  --accent-hover:      #FB7185;
+  --accent-muted:      #F43F5E33;
+  --accent-fg:         #1C1917;
+}
+
+[data-accent="cyan"] {
+  --accent:            #06B6D4;
+  --accent-hover:      #22D3EE;
+  --accent-muted:      #06B6D433;
+  --accent-fg:         #083344;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYER 3 — @theme inline mapping
+   Tailwind v4 reads these to generate utility classes.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @theme inline {
-  --color-bg: #1C1917;
-  --color-text: #F2EDE4;
-  --color-accent: #D9A441;
-  --font-heading: var(--font-fraunces, serif);
-  --font-body: var(--font-inter, sans-serif);
-  --font-sans: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* ── Semantic color tokens ────────────────────────────────── */
+  --color-bg:            var(--raw-bg);
+  --color-surface:       var(--raw-surface);
+  --color-surface-alt:   var(--raw-surface-alt);
+  --color-surface-raised:var(--raw-surface-raised);
+  --color-surface-inset: var(--raw-surface-inset);
+  --color-surface-hover: var(--raw-surface-hover);
+
+  --color-border:        var(--raw-border);
+  --color-border-subtle: var(--raw-border-subtle);
+  --color-border-strong: var(--raw-border-strong);
+
+  --color-text:          var(--raw-text);
+  --color-text-muted:    var(--raw-text-muted);
+  --color-text-dim:      var(--raw-text-dim);
+  --color-text-faint:    var(--raw-text-faint);
+  --color-text-strong:   var(--raw-text-strong);
+
+  /* ── Accent tokens (swap via data-accent) ─────────────────── */
+  --color-accent:        var(--accent);
+  --color-accent-hover:  var(--accent-hover);
+  --color-accent-muted:  var(--accent-muted);
+  --color-accent-fg:     var(--accent-fg);
+
+  /* ── Semantic tokens ──────────────────────────────────────── */
+  --color-error:         var(--raw-error);
+  --color-error-surface: var(--raw-error-surface);
+  --color-success:       var(--raw-success);
+
+  /* ── Typography ───────────────────────────────────────────── */
+  --font-heading:        var(--raw-font-heading);
+  --font-body:           var(--raw-font-body);
+  --font-sans:           var(--raw-font-sans);
+  --font-mono:           var(--raw-font-mono);
+
+  /* ── Radii ────────────────────────────────────────────────── */
+  --radius-sm:           var(--raw-radius-sm);
+  --radius-md:           var(--raw-radius);
+  --radius-lg:           var(--raw-radius-lg);
+  --radius-xl:           var(--raw-radius-xl);
+  --radius-2xl:          var(--raw-radius-2xl);
+
+  /* ── Shadows ──────────────────────────────────────────────── */
+  --shadow-sm:           var(--raw-shadow-sm);
+  --shadow-md:           var(--raw-shadow-md);
+  --shadow-lg:           var(--raw-shadow-lg);
+  --shadow-xl:           var(--raw-shadow-xl);
+
+  /* ── Transition ───────────────────────────────────────────── */
+  --ease-default:        var(--raw-transition);
+
+  /* ── shadcn compatibility (preserved for existing components) */
+  --color-background:    var(--raw-bg);
+  --color-foreground:    var(--raw-text);
+  --color-primary:       var(--accent);
+  --color-primary-foreground: var(--accent-fg);
+  --color-secondary:     var(--raw-surface);
+  --color-secondary-foreground: var(--raw-text);
+  --color-muted:         var(--raw-surface);
+  --color-muted-foreground: var(--raw-text-muted);
+  --color-accent-shadcn: var(--raw-surface-alt);
+  --color-accent-foreground: var(--raw-text);
+  --color-destructive:   var(--raw-error);
+  --color-border-shadcn: var(--raw-border);
+  --color-input:         var(--raw-border);
+  --color-ring:          var(--accent);
+  --color-card:          var(--raw-surface);
+  --color-card-foreground: var(--raw-text);
+  --color-popover:       var(--raw-surface);
+  --color-popover-foreground: var(--raw-text);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+html {
+  color-scheme: dark;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 /* CTA buttons: direct-child links inside main */
-/* Consistent vertical spacing for all page content */
-main {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
 main > a {
   display: inline-block;
   background-color: var(--color-accent);
-  color: var(--color-bg);
+  color: var(--color-accent-fg);
   padding: 0.75rem 1.5rem;
-  border-radius: 0.375rem;
+  border-radius: var(--radius-md);
   font-weight: 600;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: opacity var(--raw-transition);
 }
 
 main > a:hover {
   opacity: 0.85;
 }
 
-/* Prevent any text from overflowing the viewport */
-html {
-  overflow-x: hidden;
-}
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEND-BUTTON ANIMATION KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Headings inherit the heading font */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-}
-
-:root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
-
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-/* ─── Send-button animation keyframes ─── */
-
-/* Error shake — a single quick rattle via translateX (compositor-only) */
 @keyframes send-btn-shake {
   0%, 100% { transform: translateX(0); }
   20%      { transform: translateX(-4px); }
@@ -162,14 +229,16 @@ h1, h2, h3, h4, h5, h6 {
   80%      { transform: translateX(2px); }
 }
 
-/* Loading spinner rotation */
 @keyframes send-btn-spin {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 
-/* Skip ALL motion for users who prefer reduced motion.
-   Color and label changes (non-motion feedback) still fire. */
+@keyframes dot-grid-pulse {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.35; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .send-btn-shake {
     animation: none !important;
