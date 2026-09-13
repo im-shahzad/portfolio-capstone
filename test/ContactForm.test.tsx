@@ -5,7 +5,6 @@ import ContactForm from "@/components/ContactForm";
 
 describe("ContactForm", () => {
   it("shows validation errors when all fields are submitted empty", async () => {
-    const user = userEvent.setup();
     render(<ContactForm />);
 
     const form = screen.getByRole("button", { name: /send message/i }).closest("form")!;

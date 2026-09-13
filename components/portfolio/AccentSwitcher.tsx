@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import React, { useCallback, useSyncExternalStore } from "react";
 import { cn } from "@/lib/utils";
 
 const ACCENTS = [
@@ -38,22 +38,30 @@ export function AccentProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export function useAccent() {
-  const [accent, setAccent] = React.useState<AccentId>("gold");
+function subscribe(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-accent"] });
+  return () => observer.disconnect();
+}
 
-  React.useEffect(() => {
-    setAccent(getStoredAccent());
-    const observer = new MutationObserver(() => {
-      const current = document.documentElement.getAttribute("data-accent") as AccentId | null;
-      if (current && ACCENTS.some((a) => a.id === current)) setAccent(current);
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-accent"] });
-    return () => observer.disconnect();
-  }, []);
+function getClientSnapshot(): AccentId {
+  const current = document.documentElement.getAttribute("data-accent") as AccentId | null;
+  if (current && ACCENTS.some((a) => a.id === current)) return current;
+  return getStoredAccent();
+}
+
+function getServerSnapshot(): AccentId {
+  return "gold";
+}
+
+export function useAccent() {
+  // useSyncExternalStore (not useState+useEffect) so the first client render
+  // matches SSR output exactly ("gold"), avoiding a hydration mismatch —
+  // the real stored/DOM value is picked up right after hydration.
+  const accent = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
 
   const changeAccent = useCallback((id: AccentId) => {
     setStoredAccent(id);
-    setAccent(id);
   }, []);
 
   return { accent, changeAccent, accents: ACCENTS };
@@ -81,7 +89,7 @@ export default function AccentSwitcher({ className }: AccentSwitcherProps) {
           title={a.label}
           onClick={() => changeAccent(a.id)}
           className={cn(
-            "w-5 h-5 rounded-full border-2 transition-all duration-200 outline-none",
+            "w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 transition-all duration-200 outline-none",
             "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
             accent === a.id
               ? "scale-110 border-white/60 shadow-[0_0_8px_var(--accent)]"

@@ -56,12 +56,12 @@ export default function ContactForm() {
       <div
         role="status"
         aria-live="polite"
-        className="rounded-lg border border-green-200 bg-green-50 p-6 text-center dark:border-green-800 dark:bg-green-950"
+        className="rounded-lg border border-success/30 bg-success/10 p-6 text-center"
       >
-        <h3 className="text-lg font-semibold text-green-800 dark:text-green-200">
+        <h3 className="text-lg font-semibold text-success">
           Message sent!
         </h3>
-        <p className="mt-2 text-green-700 dark:text-green-300">
+        <p className="mt-2 text-success/80">
           Thanks for reaching out. I&apos;ll get back to you soon.
         </p>
         <button
@@ -70,7 +70,7 @@ export default function ContactForm() {
             setSubmitted(false);
             setFormData({ name: "", email: "", message: "" });
           }}
-          className="mt-4 rounded-sm text-sm font-medium text-green-800 underline outline-none hover:text-green-600 focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2 dark:text-green-200"
+          className="mt-4 rounded-sm text-sm font-medium text-success underline outline-none hover:text-success/70 focus-visible:ring-2 focus-visible:ring-success focus-visible:ring-offset-2"
         >
           Send another message
         </button>
@@ -83,7 +83,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="name"
-          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="block text-sm font-medium text-text-muted"
         >
           Name
         </label>
@@ -95,11 +95,11 @@ export default function ContactForm() {
           onChange={handleChange}
           aria-invalid={!!errors.name}
           aria-describedby={errors.name ? "name-error" : undefined}
-          className="mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="mt-1 block w-full rounded-md border border-border bg-surface-inset px-3 py-2 text-sm text-text shadow-sm placeholder:text-text-dim outline-none focus-visible:ring-2 focus-visible:ring-accent"
           placeholder="Your name"
         />
         {errors.name && (
-          <p id="name-error" role="alert" className="mt-1 text-xs text-red-600 dark:text-red-400">
+          <p id="name-error" role="alert" className="mt-1 text-xs text-error">
             {errors.name}
           </p>
         )}
@@ -108,7 +108,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="block text-sm font-medium text-text-muted"
         >
           Email
         </label>
@@ -120,11 +120,11 @@ export default function ContactForm() {
           onChange={handleChange}
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? "email-error" : undefined}
-          className="mt-1 block w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="mt-1 block w-full rounded-md border border-border bg-surface-inset px-3 py-2 text-sm text-text shadow-sm placeholder:text-text-dim outline-none focus-visible:ring-2 focus-visible:ring-accent"
           placeholder="you@example.com"
         />
         {errors.email && (
-          <p id="email-error" role="alert" className="mt-1 text-xs text-red-600 dark:text-red-400">
+          <p id="email-error" role="alert" className="mt-1 text-xs text-error">
             {errors.email}
           </p>
         )}
@@ -133,7 +133,7 @@ export default function ContactForm() {
       <div>
         <label
           htmlFor="message"
-          className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+          className="block text-sm font-medium text-text-muted"
         >
           Message
         </label>
@@ -145,11 +145,11 @@ export default function ContactForm() {
           onChange={handleChange}
           aria-invalid={!!errors.message}
           aria-describedby={errors.message ? "message-error" : undefined}
-          className="mt-1 block w-full resize-none rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 shadow-sm placeholder:text-zinc-400 outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          className="mt-1 block w-full resize-none rounded-md border border-border bg-surface-inset px-3 py-2 text-sm text-text shadow-sm placeholder:text-text-dim outline-none focus-visible:ring-2 focus-visible:ring-accent"
           placeholder="How can I help?"
         />
         {errors.message && (
-          <p id="message-error" role="alert" className="mt-1 text-xs text-red-600 dark:text-red-400">
+          <p id="message-error" role="alert" className="mt-1 text-xs text-error">
             {errors.message}
           </p>
         )}
@@ -157,7 +157,7 @@ export default function ContactForm() {
 
       <button
         type="submit"
-        className="w-full rounded-md bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-700 outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 focus-visible:ring-offset-2 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+        className="w-full rounded-md bg-accent px-4 py-2.5 text-sm font-medium text-accent-fg shadow-sm transition-all hover:brightness-110 outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       >
         Send Message
       </button>

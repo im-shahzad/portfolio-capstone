@@ -5,8 +5,8 @@ import { Globe, Link2, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "https://github.com/IMShahzad000", label: "GitHub", icon: Globe },
-  { href: "https://linkedin.com/in/imshahzad000", label: "LinkedIn", icon: Link2 },
+  { href: "https://github.com/im-shahzad", label: "GitHub", icon: Globe },
+  { href: "https://www.linkedin.com/in/imshahzad0101/", label: "LinkedIn", icon: Link2 },
   { href: "mailto:imshahzad000@gmail.com", label: "Email", icon: Mail },
 ];
 
